@@ -1,0 +1,66 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global" controller="V2_CaseDetailController">
+    <aura:attribute name="_inEditMode" type="boolean" default="false" />
+    <aura:attribute name="negotiationObj" type="sObject" /> 
+    <aura:attribute name="listenForSave" type="boolean" default="false" />
+    <aura:attribute name="isChkActive" type="boolean" default="false" />
+    <aura:attribute name="activeSections" type="List" default="['A','C']" />
+    <aura:attribute name="optionsChk" type="List" default="[
+    {'label': 'Verbal', 'value': 'Verbal'},
+    {'label': 'Written', 'value': 'Written'},
+    {'label': 'Website', 'value': 'Website'},
+    ]"/>
+    
+    <aura:html tag="style">
+        .toastMessage.forceActionsText{ white-space : pre-line !important; }
+    </aura:html>
+    
+    <aura:handler event="c:V2_evtCaseActionCenterSaveClicked" action="{!c.handleSave}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    
+    <lightning:messages />
+    
+    <lightning:accordion allowMultipleSectionsOpen="true" aura:id="accordian" activeSectionName="{!v.activeSections}">
+        <lightning:accordionSection name="A" label="Provider Agreement" class="slds-card">
+            <aura:set attribute="actions">
+                <aura:if isTrue="{!not(empty(v.activeSections))}">
+                    <lightning:icon iconName="utility:chevronup" size="x-small" class="slds-var-m-right_small" />
+                    <aura:set attribute="else">
+                        <lightning:icon iconName="utility:chevrondown" size="x-small" class="slds-var-m-right_small" />
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+            <div style="display: flex; overflow-y: hidden; overflow-x: auto;">
+                <div class="minWidthDiv">
+                    <div>
+                        <label class="slds-form-element__label v2-label-smaller" for="Provider_Agreement_No_BB__c">
+                            Provider agrees to not to balance bill the Patient
+                        </label>
+                    </div>
+                    <div>
+                        <lightning:input class="v2-label-smaller" variant="label-hidden" type="checkbox" aura:id="Provider_Agreement_No_BB__c" value="{!v.negotiationObj.Provider_Agreement_No_BB__c }" checked="{!v.negotiationObj.Provider_Agreement_No_BB__c }" disabled="{!!v._inEditMode}" onchange="{! c.onChkChange }" 
+                                         label="Provider agrees to not to balance bill the Patient" />              </div>
+                </div>
+                <aura:if isTrue="{!v.isChkActive}">
+                    <div class="minWidthDiv" style="width: 15%">
+                    </div>    
+                    
+                    <div class="minWidthDiv">
+                        <div>
+                            <lightning:combobox value="{!v.negotiationObj.Provider_Agreement_No_BB_Source__c}" name="SourceName" label="Source" placeholder="Select an Option" options="{!v.optionsChk}" disabled="{!!v._inEditMode}" onchange="{!c.onChange}"  />
+                            
+                        </div>
+                        <div>
+                           
+                        </div>
+                    </div>
+                </aura:if> 
+            </div>
+            
+            
+        </lightning:accordionSection>
+    </lightning:accordion>
+</aura:component>
